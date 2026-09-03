@@ -184,22 +184,33 @@ to tell a test that checks behavior from one that merely runs it.
   and data-catalog logic, `InstrumentDisplay` renderer, `main.cpp` wiring,
   host-side tests (mutation-tested), test-server RMB simulation.
 
+### Done (2026-09-03, first build)
+1. **Firmware build - DONE.** `env:x3` builds clean via
+   `scripts/build_web_installer.sh` (which wraps `pio run -e x3`) - a fresh
+   `~/.venvs/pio` PlatformIO 6.1.19 + esptool 5.4.0 install, `freeink-sdk`
+   at commit `24003795381a6c23630a26472ae3b06550333e71` (one commit past
+   eNMEA's pinned `fad70f28...`; diffed first - the only change in between
+   is an unrelated SD-rail fix on a different board, nothing touching
+   X3/X4 or the API surface this project uses). 1.1MB image, RAM 13.1%
+   (42876/327680 bytes), flash 16.9% - comfortable headroom on both. No
+   warnings from project code. **`env:x4` has not been built or flashed -
+   only x3 has hardware to test on.**
+   `docs/firmware/eData-x3-f9d111b.bin` and `docs/manifest.json` now exist
+   and are committed; the installer page at
+   https://cffinch62.github.io/eData/ is live once GitHub Pages is enabled
+   for this repo (`main` branch, `/docs`).
+
 ### Not done - needs a human with hardware
-1. **Firmware build.** `pio run -e x4`/`-e x3` has not been run - this
-   session had no PlatformIO installation and no `freeink-sdk` checkout
-   available. Before trusting anything below, clone `freeink-sdk` next to
-   `platformio.ini` (see README's "Getting freeink-sdk", same pin process
-   as eNMEA - **re-check the pinned commit still builds**, since it hasn't
-   been re-verified against upstream since eNMEA's own last check) and
-   confirm both envs compile clean.
 2. **All on-panel visual verification.** Box geometry, "big as possible"
    text fit at each of the three box counts, the footer layout, the LEFT/
    RIGHT page-scroll gesture, the NO DATA AVAILABLE fallback, and the
    display-layout web form actually round-tripping to the panel - none of
-   this has been seen rendered. eNMEA's own bring-up checklist is the
-   template to follow; there's still no simulator (eNMEA's `IMPLEMENTATION_
-   PLAN.md` "Simulator" section explains the gap and why it wasn't closed -
-   nothing here changes that calculus).
+   this has been seen rendered. Compiling clean and fitting comfortably in
+   flash/RAM (see above) says nothing about whether the layout looks right.
+   eNMEA's own bring-up checklist is the template to follow; there's still
+   no simulator (eNMEA's `IMPLEMENTATION_PLAN.md` "Simulator" section
+   explains the gap and why it wasn't closed - nothing here changes that
+   calculus).
 3. **A real waypoint/route source, if available.** The test server's RMB
    simulation is a straight-line countdown, not a real chartplotter's
    route - if a GPS/plotter that actually emits RMB is on hand, confirm
@@ -207,24 +218,22 @@ to tell a test that checks behavior from one that merely runs it.
    (e.g. some units never populate the closing-velocity field, which eData
    doesn't use anyway, but it's worth knowing what's real-world-common vs.
    spec-only).
-4. **Web installer (`docs/`, GitHub Pages) - page scaffolded, firmware not
-   built yet.** The repo owner asked for this ahead of hardware
-   verification (their call - it's also the most practical way for them to
-   get firmware onto the board at all, since this session had no
-   PlatformIO). `docs/index.html` exists (adapted from eNMEA's, with a
-   visible "not yet flown" notice instead of eNMEA's verified-claims
-   language) and `scripts/build_web_installer.sh` was already fixed to
-   emit `eData-x3-*.bin`/`"eData (Xteink X3)"` instead of eNMEA's naming.
-   **Neither `docs/manifest.json` nor any `docs/firmware/*.bin` were
-   created** - fabricating a manifest pointing at a nonexistent binary
-   would be actively misleading, not just incomplete. Running
-   `scripts/build_web_installer.sh` for the first time (requires
-   `freeink-sdk` cloned per "Getting freeink-sdk" and a local PlatformIO +
-   esptool) doubles as Task 1's first build test and produces both files;
-   commit and push `docs/` afterward, and enable GitHub Pages (`main`
-   branch, `/docs`) if not already on. The `partitions.csv` here is already
-   the CrossInk-installer-compatible dual-OTA layout, so nothing about that
-   part needs revisiting.
+4. **`env:x4` build/flash**, if an X4 board turns up - only `env:x3` has
+   been built and only against real X3 hardware would either env get
+   flashed.
+
+### Done (2026-09-03) - web installer
+`docs/index.html`, `docs/manifest.json` and
+`docs/firmware/eData-x3-f9d111b.bin` are all committed and pushed - the
+first build above (Task 1) is what they package. The installer at
+https://cffinch62.github.io/eData/ goes live once GitHub Pages is enabled
+for this repo (`main` branch, `/docs`), which is a one-time manual step in
+the repo's Settings, not something a commit can do. **The Install button
+itself has not been clicked against real hardware** - everything from "no
+device appears" onward in the page's troubleshooting table is inherited
+reasoning from eNMEA's page, not something verified for eData specifically.
+`env:x4` was not built, so there is no X4 image behind this page yet
+(matches the page's own "Which devices" caveat).
 
 ### Feature polish (after 1-2 above are solid; low individual risk)
 - **Fahrenheit/feet unit options** - same gap eNMEA has (Celsius/meters

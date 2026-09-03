@@ -86,33 +86,35 @@ pio device monitor -e x4
 
 Needs `freeink-sdk` cloned as a sibling directory first - see eNMEA's
 README "Getting freeink-sdk" section for the exact commands and why the
-pinned commit matters. **This has not been done or build-verified in this
-project yet** - see `IMPLEMENTATION_PLAN.md`.
+pinned commit matters. **`env:x3` builds clean** (verified 2026-09-03,
+commit `24003795...`, 1.1MB image, RAM 13.1% / flash 16.9% used) but has
+not been flashed to a board or seen on a real panel yet. **`env:x4` has not
+been built** - no X4 hardware has been available to test against. See
+`IMPLEMENTATION_PLAN.md`'s "Not done" section before assuming the on-screen
+layout matches this document.
 
 ## Installing without a toolchain (for end users)
 
 ### [→ Install eData from your browser](https://cffinch62.github.io/eData/)
 
-The page (`docs/index.html`) is scaffolded, following the same [ESP Web
-Tools](https://esphome.github.io/esp-web-tools/)-over-GitHub-Pages pattern
-eNMEA and eAIS use - **but it has no firmware behind it yet**. It needs
-`docs/firmware/eData-x3-<version>.bin` and `docs/manifest.json`, which only
-`scripts/build_web_installer.sh` produces (it builds `env:x3`, merges the
-image, writes the manifest, and updates the page's version/date). Since
-this firmware has never been compiled even once (see
-`IMPLEMENTATION_PLAN.md`), running that script for the first time doubles
-as the project's first real build test:
+Same [ESP Web Tools](https://esphome.github.io/esp-web-tools/)-over-GitHub-
+Pages pattern eNMEA and eAIS use. `env:x3` has built clean and
+`docs/firmware/eData-x3-<version>.bin` + `docs/manifest.json` are committed
+- **but the Install button itself has not been exercised against real
+hardware yet** (see `IMPLEMENTATION_PLAN.md`'s "Not done" section). If the
+hosted link 404s, GitHub Pages likely still needs enabling for this repo
+(Settings → Pages → deploy from `main` branch, `/docs` folder) - a one-time
+manual step, not something a commit can do.
+
+Rebuild after a firmware change:
 
 ```sh
-git clone https://github.com/Free-Ink/freeink-sdk.git   # if not already done - see "Getting freeink-sdk" above
-scripts/build_web_installer.sh
+scripts/build_web_installer.sh   # builds env:x3, merges, regenerates the manifest
 git add docs && git commit && git push
 ```
 
-Then enable GitHub Pages for this repo (Settings → Pages → deploy from
-`main` branch, `/docs` folder) if it isn't already. Until both of those
-happen, the hosted link above will 404 or show a page whose Install button
-fails to fetch a manifest - that's expected, not a bug to chase.
+Only `env:x3` has an image behind this installer - no X4 hardware has been
+available to build or test `env:x4` against.
 
 ## Tests
 

@@ -1,0 +1,13 @@
+{
+  "name": "eData (Xteink X3)",
+  "version": "f9d111b",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C3",
+      "parts": [
+        { "path": "firmware/eData-x3-f9d111b.bin", "offset": 0 }
+      ]
+    }
+  ]
+}
