@@ -207,13 +207,23 @@ to tell a test that checks behavior from one that merely runs it.
    (e.g. some units never populate the closing-velocity field, which eData
    doesn't use anyway, but it's worth knowing what's real-world-common vs.
    spec-only).
-4. **Web installer (`docs/`, GitHub Pages).** Deliberately not set up in
-   this pass - eNMEA/eAIS's browser-install flow is real infrastructure
-   (custom partition table, ESP Web Tools manifest, a hosted GitHub Pages
-   page) that's premature before the display logic above is hardware-
-   verified at all. Follow `eNMEA/scripts/build_web_installer.sh` as the
-   template once ready; the `partitions.csv` here is already the
-   CrossInk-installer-compatible dual-OTA layout, so nothing about that
+4. **Web installer (`docs/`, GitHub Pages) - page scaffolded, firmware not
+   built yet.** The repo owner asked for this ahead of hardware
+   verification (their call - it's also the most practical way for them to
+   get firmware onto the board at all, since this session had no
+   PlatformIO). `docs/index.html` exists (adapted from eNMEA's, with a
+   visible "not yet flown" notice instead of eNMEA's verified-claims
+   language) and `scripts/build_web_installer.sh` was already fixed to
+   emit `eData-x3-*.bin`/`"eData (Xteink X3)"` instead of eNMEA's naming.
+   **Neither `docs/manifest.json` nor any `docs/firmware/*.bin` were
+   created** - fabricating a manifest pointing at a nonexistent binary
+   would be actively misleading, not just incomplete. Running
+   `scripts/build_web_installer.sh` for the first time (requires
+   `freeink-sdk` cloned per "Getting freeink-sdk" and a local PlatformIO +
+   esptool) doubles as Task 1's first build test and produces both files;
+   commit and push `docs/` afterward, and enable GitHub Pages (`main`
+   branch, `/docs`) if not already on. The `partitions.csv` here is already
+   the CrossInk-installer-compatible dual-OTA layout, so nothing about that
    part needs revisiting.
 
 ### Feature polish (after 1-2 above are solid; low individual risk)

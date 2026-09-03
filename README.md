@@ -89,6 +89,31 @@ README "Getting freeink-sdk" section for the exact commands and why the
 pinned commit matters. **This has not been done or build-verified in this
 project yet** - see `IMPLEMENTATION_PLAN.md`.
 
+## Installing without a toolchain (for end users)
+
+### [→ Install eData from your browser](https://cffinch62.github.io/eData/)
+
+The page (`docs/index.html`) is scaffolded, following the same [ESP Web
+Tools](https://esphome.github.io/esp-web-tools/)-over-GitHub-Pages pattern
+eNMEA and eAIS use - **but it has no firmware behind it yet**. It needs
+`docs/firmware/eData-x3-<version>.bin` and `docs/manifest.json`, which only
+`scripts/build_web_installer.sh` produces (it builds `env:x3`, merges the
+image, writes the manifest, and updates the page's version/date). Since
+this firmware has never been compiled even once (see
+`IMPLEMENTATION_PLAN.md`), running that script for the first time doubles
+as the project's first real build test:
+
+```sh
+git clone https://github.com/Free-Ink/freeink-sdk.git   # if not already done - see "Getting freeink-sdk" above
+scripts/build_web_installer.sh
+git add docs && git commit && git push
+```
+
+Then enable GitHub Pages for this repo (Settings → Pages → deploy from
+`main` branch, `/docs` folder) if it isn't already. Until both of those
+happen, the hosted link above will 404 or show a page whose Install button
+fails to fetch a manifest - that's expected, not a bug to chase.
+
 ## Tests
 
 ```sh
