@@ -8,10 +8,11 @@ transport layer `eNMEA` uses, which this project was forked from.
 **NAV data only.** No engine, tank, or AIS data - see the sibling `eEngine`
 and `eAIS` projects for those.
 
-**Hardware status: not yet flashed to a real board.** Everything here has
-been verified with host-side tests (`test/run_tests.sh`) but not on the
-actual e-ink panel - see `IMPLEMENTATION_PLAN.md`'s "Not done" section
-before assuming the on-screen layout looks like this document describes.
+**Hardware status: verified on an X3, all three box counts.** Flashed and
+tested on real hardware 2026-09-03 - 1, 2, and 4 boxes per screen all
+confirmed working. `env:x4` has not been built or tested (no X4 hardware
+available) - see `IMPLEMENTATION_PLAN.md`'s "Not done" section for what's
+still outstanding there.
 
 ## What it does
 
@@ -86,25 +87,25 @@ pio device monitor -e x4
 
 Needs `freeink-sdk` cloned as a sibling directory first - see eNMEA's
 README "Getting freeink-sdk" section for the exact commands and why the
-pinned commit matters. **`env:x3` builds clean** (verified 2026-09-03,
-commit `24003795...`, 1.1MB image, RAM 13.1% / flash 16.9% used) but has
-not been flashed to a board or seen on a real panel yet. **`env:x4` has not
-been built** - no X4 hardware has been available to test against. See
-`IMPLEMENTATION_PLAN.md`'s "Not done" section before assuming the on-screen
-layout matches this document.
+pinned commit matters. **`env:x3` builds clean and is hardware-verified**
+(2026-09-03, commit `24003795...`, 1.1MB image, RAM 13.1% / flash 16.9%
+used - flashed to a real X3, all three box counts confirmed working).
+**`env:x4` has not been built or tested** - an X4 is on order, expected
+around 2026-09-10; until then treat X4 support as unverified even though
+`EinkCanvas`'s runtime `width()/height()` accessors mean the same binary
+logic should apply to both panels.
 
 ## Installing without a toolchain (for end users)
 
 ### [→ Install eData from your browser](https://cffinch62.github.io/eData/)
 
 Same [ESP Web Tools](https://esphome.github.io/esp-web-tools/)-over-GitHub-
-Pages pattern eNMEA and eAIS use. `env:x3` has built clean and
-`docs/firmware/eData-x3-<version>.bin` + `docs/manifest.json` are committed
-- **but the Install button itself has not been exercised against real
-hardware yet** (see `IMPLEMENTATION_PLAN.md`'s "Not done" section). If the
-hosted link 404s, GitHub Pages likely still needs enabling for this repo
-(Settings → Pages → deploy from `main` branch, `/docs` folder) - a one-time
-manual step, not something a commit can do.
+Pages pattern eNMEA and eAIS use. `docs/firmware/eData-x3-<version>.bin` +
+`docs/manifest.json` are committed and the X3 build behind them is
+hardware-verified (see "Hardware status" above). If the hosted link 404s,
+GitHub Pages likely still needs enabling for this repo (Settings → Pages →
+deploy from `main` branch, `/docs` folder) - a one-time manual step, not
+something a commit can do.
 
 Rebuild after a firmware change:
 
@@ -113,8 +114,8 @@ scripts/build_web_installer.sh   # builds env:x3, merges, regenerates the manife
 git add docs && git commit && git push
 ```
 
-Only `env:x3` has an image behind this installer - no X4 hardware has been
-available to build or test `env:x4` against.
+Only `env:x3` has an image behind this installer - `env:x4` will follow
+once the on-order X4 board arrives.
 
 ## Tests
 
@@ -154,10 +155,9 @@ here unchanged - that section is not repeated in this README.
 
 ## What's still rough (known gaps, not hidden)
 
-- **Not yet flashed to real hardware at all** - see `IMPLEMENTATION_PLAN.md`.
-  Nothing about the on-screen layout, text sizing, or button feel has been
-  seen outside of reasoning from eNMEA's proven `EinkCanvas`/font/geometry
-  patterns.
+- **`env:x4` is unbuilt and untested** - no X4 hardware was available when
+  this was written; one is on order (expected ~2026-09-10). The X3 build is
+  hardware-verified across all three box counts.
 - No Fahrenheit option for water temp, no feet option for depth - same gap
   as eNMEA, same reason (v1 scope).
 - `HDG` heading is shown as magnetic, not corrected to true - same
@@ -166,9 +166,9 @@ here unchanged - that section is not repeated in this README.
 - Only RMB is parsed for waypoint data; BWC/BWR/WPL/RTE/standalone XTE are
   not, on the theory that real equipment sending a route sends RMB. Revisit
   if a real unit turns out not to.
-- The web installer (browser-based flashing, like eNMEA's GitHub Pages
-  page) does not exist yet for this project - deliberately deferred until
-  the display logic is hardware-verified.
+- The waypoint/ETA/TTG fields have only been exercised against the bundled
+  test server's simulated RMB, not a real chartplotter's route - see
+  `IMPLEMENTATION_PLAN.md`.
 
 ## License
 

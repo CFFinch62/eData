@@ -200,38 +200,57 @@ to tell a test that checks behavior from one that merely runs it.
    https://cffinch62.github.io/eData/ is live once GitHub Pages is enabled
    for this repo (`main` branch, `/docs`).
 
+### Done (2026-09-03) - X3 hardware verification
+**All three box counts (1/2/4) confirmed working on a real X3**, per the
+project owner. This is the first real signal that the box-count/page-
+compaction design (the "shared 8-slot list, unused slots skipped" model)
+and the fit-to-box "big as possible" text sizing actually hold up outside
+of reasoning from eNMEA's proven `EinkCanvas`/font/geometry patterns - not
+just that the firmware boots.
+
+**Narrower than "everything verified"** - confirmed only in outline so far
+(three box counts work), not itemized against every specific behavior
+below. Re-open and check off individually if a regression or a design
+tweak touches any of these:
+- Footer layout (page indicator, source state, net/battery line).
+- LEFT/RIGHT page-scroll gesture specifically (vs. box counts rendering
+  correctly on their own).
+- The NO DATA AVAILABLE fallback (needs a box configured for an item with
+  no live feed - not necessarily exercised just by trying box counts with
+  a full feed running).
+- The display-layout web form's save-without-reboot round trip (box count
+  and slot changes taking effect within ~2s, no restart).
+
+### Done (2026-09-03) - web installer
+`docs/index.html`, `docs/manifest.json` and
+`docs/firmware/eData-x3-f9d111b.bin` are all committed and pushed - the
+first build above is what they package, and it's the same X3 build just
+confirmed on hardware above. The installer at
+https://cffinch62.github.io/eData/ goes live once GitHub Pages is enabled
+for this repo (`main` branch, `/docs`), which is a one-time manual step in
+the repo's Settings, not something a commit can do. The Install button's
+own browser-flash mechanism (as opposed to the firmware it flashes) is
+still unexercised for this project specifically - everything from "no
+device appears" onward in the page's troubleshooting table is inherited
+reasoning from eNMEA's page.
+
 ### Not done - needs a human with hardware
-2. **All on-panel visual verification.** Box geometry, "big as possible"
-   text fit at each of the three box counts, the footer layout, the LEFT/
-   RIGHT page-scroll gesture, the NO DATA AVAILABLE fallback, and the
-   display-layout web form actually round-tripping to the panel - none of
-   this has been seen rendered. Compiling clean and fitting comfortably in
-   flash/RAM (see above) says nothing about whether the layout looks right.
-   eNMEA's own bring-up checklist is the template to follow; there's still
-   no simulator (eNMEA's `IMPLEMENTATION_PLAN.md` "Simulator" section
-   explains the gap and why it wasn't closed - nothing here changes that
-   calculus).
-3. **A real waypoint/route source, if available.** The test server's RMB
+1. **`env:x4` build/flash/verification.** An X4 is on order, expected
+   ~2026-09-10. Nothing X4-specific has been built or tested - `EinkCanvas`
+   reading `getDisplayWidth()/getDisplayHeight()` at runtime rather than
+   static per-panel constants is exactly the mechanism that's supposed to
+   make the same binary logic work on both panels (see eNMEA's ledger on
+   why that distinction matters), but "supposed to" isn't "verified" until
+   an X4 actually shows a correct layout. When it arrives: build+flash
+   `env:x4`, repeat the three-box-count check above, and update this
+   section and README's "Hardware status" banner.
+2. **A real waypoint/route source, if available.** The test server's RMB
    simulation is a straight-line countdown, not a real chartplotter's
    route - if a GPS/plotter that actually emits RMB is on hand, confirm
    against it once, since equipment RMB implementations are known to vary
    (e.g. some units never populate the closing-velocity field, which eData
    doesn't use anyway, but it's worth knowing what's real-world-common vs.
    spec-only).
-4. **`env:x4` build/flash**, if an X4 board turns up - only `env:x3` has
-   been built and only against real X3 hardware would either env get
-   flashed.
-
-### Done (2026-09-03) - web installer
-`docs/index.html`, `docs/manifest.json` and
-`docs/firmware/eData-x3-f9d111b.bin` are all committed and pushed - the
-first build above (Task 1) is what they package. The installer at
-https://cffinch62.github.io/eData/ goes live once GitHub Pages is enabled
-for this repo (`main` branch, `/docs`), which is a one-time manual step in
-the repo's Settings, not something a commit can do. **The Install button
-itself has not been clicked against real hardware** - everything from "no
-device appears" onward in the page's troubleshooting table is inherited
-reasoning from eNMEA's page, not something verified for eData specifically.
 `env:x4` was not built, so there is no X4 image behind this page yet
 (matches the page's own "Which devices" caveat).
 
@@ -249,15 +268,18 @@ reasoning from eNMEA's page, not something verified for eData specifically.
 
 1. `test/run_tests.sh` after touching `src/nmea/*`, `src/ui/PageLayout.*`,
    or `src/ui/DataCatalog.*` - fast, mandatory, no excuses.
-2. `pio run -e x4` (and `-e x3` if you touched anything `EDATA_BOARD_X3`-
-   conditional) once `freeink-sdk` is available - **not yet done even
-   once**, see Task 1 above. Don't assume it builds clean just because
-   eNMEA's nearly-identical `platformio.ini` does.
-3. If you touched `src/ui/InstrumentDisplay.*`: flash real hardware and
+2. `pio run -e x3` (hardware-verified, see "Done - X3 hardware
+   verification" above) if you touched anything `EDATA_BOARD_X3`-
+   conditional. `pio run -e x4` **has never been run even once** - see
+   "Not done" above; don't assume it builds clean just because it shares
+   most of `platformio.ini` with the verified `x3` env.
+3. If you touched `src/ui/InstrumentDisplay.*`: flash real hardware (X3
+   confirmed good as of 2026-09-03; re-check X4 once it's available) and
    eyeball all three box counts, a short last page (uneven slot count), and
    the NO DATA AVAILABLE fallback (easiest to trigger by leaving a source
    disconnected, or configuring a waypoint item with no RMB feed). There is
-   no automated visual check and no simulator.
+   no automated visual check and no simulator - a passing build and even a
+   working three-box-count smoke test don't cover every code path here.
 4. If you touched `src/settings/ProvisioningPortal.cpp`'s display-layout
    section: save a layout from the web form and confirm the panel updates
    within one redraw tick, with no reboot.
