@@ -8,9 +8,10 @@ transport layer `eNMEA` uses, which this project was forked from.
 **NAV data only.** No engine, tank, or AIS data - see the sibling `eEngine`
 and `eAIS` projects for those.
 
-**Hardware status: verified on an X3, all three box counts.** Flashed and
-tested on real hardware 2026-09-03 - 1, 2, and 4 boxes per screen all
-confirmed working. `env:x4` has not been built or tested (no X4 hardware
+**Hardware status: verified on an X3, all three box counts, full LEFT/RIGHT
+paging.** Flashed and tested on real hardware 2026-09-03 - 1, 2, and 4
+boxes per screen all confirmed working, with page-scrolling verified across
+all three. `env:x4` has not been built or tested (no X4 hardware
 available) - see `IMPLEMENTATION_PLAN.md`'s "Not done" section for what's
 still outstanding there.
 

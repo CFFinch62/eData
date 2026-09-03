@@ -201,23 +201,23 @@ to tell a test that checks behavior from one that merely runs it.
    for this repo (`main` branch, `/docs`).
 
 ### Done (2026-09-03) - X3 hardware verification
-**All three box counts (1/2/4) confirmed working on a real X3**, per the
-project owner. This is the first real signal that the box-count/page-
-compaction design (the "shared 8-slot list, unused slots skipped" model)
-and the fit-to-box "big as possible" text sizing actually hold up outside
-of reasoning from eNMEA's proven `EinkCanvas`/font/geometry patterns - not
-just that the firmware boots.
+**All three box counts (1/2/4) confirmed working on a real X3, with full
+LEFT/RIGHT page-scrolling verified across all three**, per the project
+owner. This is the first real signal that the box-count/page-compaction
+design (the "shared 8-slot list, unused slots skipped" model), the
+fit-to-box "big as possible" text sizing, and the LEFT/RIGHT gesture's page
+index/wraparound logic actually hold up outside of reasoning from eNMEA's
+proven `EinkCanvas`/font/geometry patterns and `InputManager` button
+handling - not just that the firmware boots.
 
-**Narrower than "everything verified"** - confirmed only in outline so far
-(three box counts work), not itemized against every specific behavior
-below. Re-open and check off individually if a regression or a design
-tweak touches any of these:
-- Footer layout (page indicator, source state, net/battery line).
-- LEFT/RIGHT page-scroll gesture specifically (vs. box counts rendering
-  correctly on their own).
+**Narrower than "everything verified"** - box counts and page-scrolling are
+confirmed; the following are not yet itemized individually. Re-open and
+check off if a regression or a design tweak touches any of these:
+- Footer layout (page indicator, source state, net/battery line) - likely
+  seen incidentally while paging, but not called out as checked on its own.
 - The NO DATA AVAILABLE fallback (needs a box configured for an item with
-  no live feed - not necessarily exercised just by trying box counts with
-  a full feed running).
+  no live feed - not necessarily exercised just by paging through a full
+  feed).
 - The display-layout web form's save-without-reboot round trip (box count
   and slot changes taking effect within ~2s, no restart).
 
